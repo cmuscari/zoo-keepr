@@ -10,6 +10,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 // parse incoming json data
 app.use(express.json());
+// add middleware to automatically route the css & js files associated with the routed HTML file
+app.use(express.static('public'));
 
 
 
@@ -136,6 +138,25 @@ app.post('/api/animals', (req, res) => {
         const animal = createNewAnimal(req.body, animals);
         res.json(animal);
     }   
+});
+
+// sets up the route to display the main html page in the browser
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+// sets up the routes to display additional html pages in browser
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+});
+
+// sets up a route to display main page if user makes a request for a route that doesn't exist
+app.get('*', (req,res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.listen(PORT, () => {
